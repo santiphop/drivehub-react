@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react'
-import fallback from './placeholder.jpg'
+import fallback from '../placeholder.jpg'
 
 type CarCardProps = {
 	carItem: CarItem

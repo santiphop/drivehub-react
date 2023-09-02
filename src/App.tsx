@@ -8,6 +8,7 @@ import { cn } from './lib/utils'
 import SearchBar from './components/search-bar'
 import CarCard, { type CarItem } from './components/car-card'
 import Modal from './components/modal'
+import fallback from './components/placeholder.jpg'
 import { getCarList, getDiscount } from './lib/api'
 import logo from './logo.svg'
 import './App.css'
@@ -172,11 +173,13 @@ function App() {
 					<Fragment key={index}>
 						<div className="flex justify-between">
 							<div className="flex justify-start items-center gap-2">
-								<img src={photo} className="h-16 w-24 object-cover max-sm:hidden" alt="Preview" />
+								<img src={photo} className="h-16 w-24 object-cover rounded max-sm:hidden" alt="Preview" 
+					onError={(e) => (e.currentTarget.src = fallback)}
+					/>
 								<div>
 									<h3>{title}</h3>
 									<p>
-										{price} {'THB/Day'}
+										{Number(price).toLocaleString()} {'THB/Day'}
 									</p>
 								</div>
 							</div>

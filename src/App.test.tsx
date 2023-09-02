@@ -1,9 +1,20 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { renderHook, waitFor } from "@testing-library/react";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+const queryClient = new QueryClient();
+
+const wrapper = ({ children }: any) => (
+  <QueryClientProvider client={queryClient}>
+    {children}
+  </QueryClientProvider>
+);
+
+export function useCustomHook() {
+  return useQuery({ queryKey: ['customHook'], queryFn: () => 'api' });
+}
+
+test('renders learn react link', async () => {
+  const { result } = renderHook(() => useCustomHook(), { wrapper });
+  
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
 });

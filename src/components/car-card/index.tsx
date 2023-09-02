@@ -30,14 +30,14 @@ export default function CarCard({ carItem, addToCart }: CarCardProps) {
           alt="Car" />
       </figure>
       <div className="card-body">
-        <h2 className="card-title">{title}</h2>
-        <p>{price.toLocaleString()} {'THB/Day'}</p>
+        <h2 data-testid="title" className="card-title">{title}</h2>
+        <p data-testid="price">{price.toLocaleString()} {'THB/Day'}</p>
         <div className="card-actions mt-4">
-          <form onSubmit={addToCart}>
+          <form onSubmit={addToCart} className="w-full">
             <input readOnly name="title" className="hidden" value={title} />
             <input readOnly name="price" className="hidden" value={price} />
             <input readOnly name="photo" className="hidden" value={photo} />
-            <button name="id" type="submit" value={id} className="btn btn-primary w-full">Add to cart</button>
+            <button data-testid="add-to-cart" name="id" type="submit" value={id} className="btn btn-primary w-full">Add to cart</button>
           </form>
         </div>
       </div>

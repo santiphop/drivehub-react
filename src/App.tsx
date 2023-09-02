@@ -10,12 +10,9 @@ import Modal from "./components/modal";
 import { getCarList, getDiscount } from "./lib/api";
 import logo from "./logo.svg";
 import "./App.css";
+import SearchBar from "./components/search-bar";
 
-type SortOption = {
-  label: string
-  value: string
-  disabled?: boolean
-}
+
 
 type Cart = {
   id: string
@@ -30,7 +27,7 @@ function App() {
   const [isNewItem, setIsNewItem] = useState(false)
   const total = useMemo(() => cart?.reduce((acc, cur) => acc + Number(cur.price) * Number(cur.amount), 0), [cart])
   const [discount, setDiscount] = useState(0)
-  const grandTotal = useMemo(() => total - discount < 0 ? 0 : total - discount, [total, discount])
+  const grandTotal = useMemo(() => total - discount, [total, discount])
 
   const discountCodeRef = useRef<HTMLInputElement>(null)
   const queryParameters = new URLSearchParams(window.location.search)
@@ -79,7 +76,7 @@ function App() {
     }
 
     const discount = data.items.at(0).fields.amount as number
-    setDiscount(discount)
+    setDiscount(discount > total ? total : discount)
     toast.success('Discount code applied')
   }
 
@@ -107,29 +104,7 @@ function App() {
     setCart(updatedCart)
   }
 
-  const sortOptions: SortOption[] = useMemo(() => [
-    {
-      label: 'Sorting',
-      value: '',
-      disabled: true,
-    },
-    {
-      label: 'Price Low - High',
-      value: 'fields.price',
-    },
-    {
-      label: 'Price High - Low',
-      value: '-fields.price',
-    },
-    {
-      label: 'Name A - Z',
-      value: 'fields.title',
-    },
-    {
-      label: 'Name Z - A',
-      value: '-fields.title',
-    },
-  ], [])
+  
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['items'],
@@ -157,24 +132,9 @@ function App() {
 
       <div className="lg:px-16 mb-20">
         <div className="flex max-md:flex-col justify-between p-4">
-          <h1 className="text-4xl p-2 font-bold">Bulk Renting</h1>
+          <h1 data-testid="header" className="text-4xl p-2 font-bold">Bulk Renting</h1>
 
-          <form className="flex max-md:flex-col items-center gap-2">
-            <input
-              name="search"
-              className="input input-bordered w-full"
-              placeholder="Search car"
-              defaultValue={search}
-            />
-            <div className="flex gap-2 w-full">
-              <select defaultValue='' name="sort" className="select select-bordered max-md:w-full">
-                {sortOptions.map(option => (
-                  <option value={option.value} disabled={option.disabled} key={option.value}>{option.label}</option>
-                ))}
-              </select>
-              <button className="btn max-md:self-end"><Icon icon="mdi:magnify" width="24" height="24" /></button>
-            </div>
-          </form>
+          <SearchBar search={search} sort={sort} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-10 p-8 w-full">
@@ -230,3 +190,5 @@ function App() {
 }
 
 export default App;
+
+
